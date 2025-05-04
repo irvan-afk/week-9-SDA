@@ -59,24 +59,51 @@ boolean IsEmpty (Isi_Tree P){
 }
 
 void PreOrder (Isi_Tree P){
-    printf("%c => ", P[1].info);
-    for (int i = 1; i <= 10; i++)
-    {
-        if (P[P[i].ps_fs].ps_fs != nil)
-        {
-            printf("%c => ", P[P[i].ps_fs].info);
-        }
-        else{
-            printf("%c => ", P[P[i].ps_fs].info);
-            if ( P[P[i].ps_fs].ps_nb != nil)
-            {
-                printf("%c => ", P[P[P[i].ps_fs].ps_nb].info);
-            }
-        }
-        i++;
-    }
+    printf("%c", P[1].info);
 
     
+}
+
+void InOrder (Isi_Tree P){
+    int penampung = 1;
+    int fsroot, p2;
+    int tf;
+    while (penampung != nil)
+    {
+        if (P[penampung].ps_fs != nil)
+        {
+            penampung = P[penampung].ps_fs;
+            // Pengecekan apakah parent dari penampung adalah root
+            if (P[penampung].ps_pr == 1)
+            {
+                fsroot = penampung;
+            }
+        }
+        else
+        {
+            p2 = penampung;
+            while (P[p2].ps_pr != 1)
+            {
+                if (P[p2].ps_pr == 1 && tf == 1)
+                {
+
+                }
+                else
+                {
+                    printf("%c", P[p2].info);
+                }
+                if (P[p2].ps_pr == 1)
+                {
+                    tf = 1;
+                }
+                    p2 = P[p2].ps_pr;
+             }
+            if (P[penampung].ps_nb != nil)
+            {
+                penampung = P[penampung].ps_nb;
+            }
+        }
+    }
 }
 
 void PrintTree (Isi_Tree P){
