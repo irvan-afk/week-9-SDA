@@ -24,11 +24,11 @@ void Create_tree(Isi_Tree X, int Jml_Node){
     X[3].ps_nb = nil; 
     X[3].ps_pr = 1;
 
-    X[4].ps_fs = 0; 
+    X[4].ps_fs = nil; 
     X[4].ps_nb = 5; 
     X[4].ps_pr = 2;
 
-    X[5].ps_fs = nil; 
+    X[5].ps_fs = 9; 
     X[5].ps_nb = nil; 
     X[5].ps_pr = 2;
 
@@ -64,46 +64,77 @@ void PreOrder (Isi_Tree P){
     
 }
 
-void InOrder (Isi_Tree P){
-    int penampung = 1;
-    int fsroot, p2;
-    int tf;
-    while (penampung != nil)
-    {
-        if (P[penampung].ps_fs != nil)
-        {
-            penampung = P[penampung].ps_fs;
-            // Pengecekan apakah parent dari penampung adalah root
-            if (P[penampung].ps_pr == 1)
-            {
-                fsroot = penampung;
-            }
-        }
-        else
-        {
-            p2 = penampung;
-            while (P[p2].ps_pr != 1)
-            {
-                if (P[p2].ps_pr == 1 && tf == 1)
-                {
+void InOrder(Isi_Tree P) {
+    int stack[jml_maks];
+    int state[jml_maks];  // 0 = belum kunjungi anak, 1 = sudah
+    int top = -1;
 
+    int current = 1; // Asumsi node 1 adalah root
+
+    while (current != nil || top != -1) {
+        // Telusuri anak pertama ke dalam stack
+        while (current != nil) {
+            top++;
+            stack[top] = current;
+            state[top] = 0;
+            current = P[current].ps_fs;
+        }
+
+        // Ambil dari stack
+        current = stack[top];
+
+        if (state[top] == 0) {
+            // Cetak node (baru selesai anak pertama)
+            printf("%c ", P[current].info);
+            state[top] = 1;
+
+            // Lanjutkan ke saudara anak pertama jika ada
+            int child = P[current].ps_fs;
+            if (child != nil) {
+                current = P[child].ps_nb;
+            } else {
+                current = nil; // Tidak punya anak -> kosong
+            }
+        } else {
+            // Sudah cetak dan kunjungi saudara, pop dari stack
+            top--;
+            current = nil;
+        }
+    }
+}
+
+void PostOrder (Isi_Tree P){
+    int current = 1; // Asumsi node 1 adalah root
+    boolean firstroot = false, edgestatus = false;
+    while (firstroot == false){
+        if (P[current].ps_fs != nil && edgestatus == false){
+            current = P[current].ps_fs;
+            if (P[current].ps_fs == nil){
+                printf("%c ", P[current].info);
+            } 
+        }
+        else{
+            if (P[current].ps_nb != nil){
+                current = P[current].ps_nb;
+                if (P[current].ps_fs == nil){
+                    printf("%c ", P[current].info);
                 }
-                else
-                {
-                    printf("%c", P[p2].info);
+            } else {
+                edgestatus = true;
+                current = P[current].ps_pr;
+                printf("%c ", P[current].info);
+            }
+            if (P[current].ps_pr == 1){
+                firstroot = true;
+                if (firstroot == true && P[current].ps_nb !=nil){
+                    firstroot = false;
+                    edgestatus = false;
+                    current = P[current].ps_nb;
                 }
-                if (P[p2].ps_pr == 1)
-                {
-                    tf = 1;
-                }
-                    p2 = P[p2].ps_pr;
-             }
-            if (P[penampung].ps_nb != nil)
-            {
-                penampung = P[penampung].ps_nb;
             }
         }
     }
+    printf("%c ", P[1].info);
 }
 
 void PrintTree (Isi_Tree P){
@@ -115,4 +146,25 @@ void PrintTree (Isi_Tree P){
         printf("%d\n\n",P[i].ps_pr);
     }
     
+}
+
+
+void inorders(Isi_Tree P, int node) {
+    if (node == nil) return;
+
+    // Anak pertama
+    if (P[node].ps_fs != nil)
+        inorders(P, P[node].ps_fs);
+
+    // Node itu sendiri
+    printf("%c ", P[node].info);
+
+    // Saudara dari anak pertama
+    if (P[node].ps_fs != nil) {
+        int sibling = P[P[node].ps_fs].ps_nb;
+        while (sibling != nil) {
+            inorders(P, sibling);
+            sibling = P[sibling].ps_nb;
+        }
+    }
 }
