@@ -82,5 +82,6 @@ Pohon */
 /* Basis : Pohon Kosong, tingginya Nol */
 int Max (infotype Data1, infotype Data2);
 /* Mengirimkan Nilai terbesar dari dua data */
-
+int hitungNode(Isi_Tree P, address nodeIdx);
+/* Menghitung jumlah node dari nodeIdx ke bawah */
 #endif

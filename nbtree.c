@@ -65,40 +65,45 @@ void PreOrder (Isi_Tree P){
 }
 
 void InOrder(Isi_Tree P) {
-    int stack[jml_maks];
-    int state[jml_maks];  // 0 = belum kunjungi anak, 1 = sudah
-    int top = -1;
-
-    int current = 1; // Asumsi node 1 adalah root
-
-    while (current != nil || top != -1) {
-        // Telusuri anak pertama ke dalam stack
-        while (current != nil) {
-            top++;
-            stack[top] = current;
-            state[top] = 0;
-            current = P[current].ps_fs;
-        }
-
-        // Ambil dari stack
-        current = stack[top];
-
-        if (state[top] == 0) {
-            // Cetak node (baru selesai anak pertama)
-            printf("%c ", P[current].info);
-            state[top] = 1;
-
-            // Lanjutkan ke saudara anak pertama jika ada
-            int child = P[current].ps_fs;
-            if (child != nil) {
-                current = P[child].ps_nb;
-            } else {
-                current = nil; // Tidak punya anak -> kosong
+    int current = 1, fsr; // Asumsi node 1 adalah root
+    boolean firstroot = false, dontprint = false;
+    while (firstroot == false){
+        if (P[current].ps_fs != nil){
+            if (current == 1){
+                fsr = P[current].ps_fs;
             }
-        } else {
-            // Sudah cetak dan kunjungi saudara, pop dari stack
-            top--;
-            current = nil;
+            current = P[current].ps_fs;
+            if (P[current].ps_fs == nil){
+                printf("%c ", P[current].info);
+                if (dontprint == false){
+                    printf("%c ", P[P[current].ps_pr].info);
+                    dontprint = true;
+                } 
+                else {
+                    dontprint = false;
+                }
+            } 
+        }
+        else{
+            if (P[current].ps_nb != nil){
+                current = P[current].ps_nb;
+                if (P[current].ps_fs == nil){
+                    printf("%c ", P[current].info);
+                    if (dontprint == false){
+                        printf("%c ", P[P[current].ps_pr].info);
+                        dontprint = true;
+                    } 
+                }
+            } else {
+                firstroot = true;
+                if (firstroot == true && P[fsr].ps_nb !=nil){
+                    firstroot = false;
+                    dontprint = false;
+                    fsr = P[fsr].ps_nb;
+                    current = fsr;
+                    printf("%c ", P[1].info);
+                }
+            }
         }
     }
 }
@@ -137,6 +142,14 @@ void PostOrder (Isi_Tree P){
     printf("%c ", P[1].info);
 }
 
+void Level_order(Isi_Tree X, int Maks_node){
+    int i = 1;
+    while (i <= Maks_node){
+        printf("%c ", X[i].info);
+        i++;
+    }
+}
+
 void PrintTree (Isi_Tree P){
     for (int i = 1; i <= 10; i++)
     {
@@ -148,23 +161,55 @@ void PrintTree (Isi_Tree P){
     
 }
 
+int nbElmt (Isi_Tree P){
+    hitungNode(P, 1);
+}
 
-void inorders(Isi_Tree P, int node) {
-    if (node == nil) return;
+int hitungNode(Isi_Tree P, address nodeIdx) {
+    if (nodeIdx == nil) return 0;
 
-    // Anak pertama
-    if (P[node].ps_fs != nil)
-        inorders(P, P[node].ps_fs);
+    int count = 1; // hitung node ini sendiri
 
-    // Node itu sendiri
-    printf("%c ", P[node].info);
+    // Hitung semua anak dari node ini
+    address child = P[nodeIdx].ps_fs;
+    while (child != nil) {
+        count += hitungNode(P, child);
+        child = P[child].ps_nb; // pindah ke adik
+    }
 
-    // Saudara dari anak pertama
-    if (P[node].ps_fs != nil) {
-        int sibling = P[P[node].ps_fs].ps_nb;
-        while (sibling != nil) {
-            inorders(P, sibling);
-            sibling = P[sibling].ps_nb;
+    return count;
+}
+
+int nbDaun(Isi_Tree P){
+    int count = 0;
+    boolean firstroot = false, edgestatus = false;
+    int current = 1; // Asumsi node 1 adalah root
+    while (firstroot == false){
+        if (P[current].ps_fs != nil && edgestatus == false){
+            current = P[current].ps_fs;
+            if (P[current].ps_fs == nil){
+                count++;
+            } 
+        }
+        else{
+            if (P[current].ps_nb != nil){
+                current = P[current].ps_nb;
+                if (P[current].ps_fs == nil){
+                    count++;
+                }
+            } else {
+                edgestatus = true;
+                current = P[current].ps_pr;
+            }
+            if (P[current].ps_pr == 1){
+                firstroot = true;
+                if (firstroot == true && P[current].ps_nb !=nil){
+                    firstroot = false;
+                    edgestatus = false;
+                    current = P[current].ps_nb;
+                }
+            }
         }
     }
+    return count;
 }
