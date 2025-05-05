@@ -28,7 +28,7 @@ void Create_tree(Isi_Tree X, int Jml_Node){
     X[4].ps_nb = 5; 
     X[4].ps_pr = 2;
 
-    X[5].ps_fs = nil; 
+    X[5].ps_fs = 9; 
     X[5].ps_nb = nil; 
     X[5].ps_pr = 2;
 
@@ -51,7 +51,6 @@ void Create_tree(Isi_Tree X, int Jml_Node){
     X[10].ps_fs = nil; 
     X[10].ps_nb = nil; 
     X[10].ps_pr = 5;
-    
 }
 
 boolean IsEmpty (Isi_Tree P){
@@ -59,24 +58,41 @@ boolean IsEmpty (Isi_Tree P){
 }
 
 void PreOrder (Isi_Tree P){
-    printf("%c => ", P[1].info);
-    for (int i = 1; i <= 10; i++)
+    int indeks = 1 ;
+    printf("%c ", P[indeks].info);
+    for (int i = 1; i < 10; i++)
     {
-        if (P[P[i].ps_fs].ps_fs != nil)
+        if (P[indeks].ps_fs == nil && P[indeks].ps_nb == nil)
         {
-            printf("%c => ", P[P[i].ps_fs].info);
-        }
-        else{
-            printf("%c => ", P[P[i].ps_fs].info);
-            if ( P[P[i].ps_fs].ps_nb != nil)
+            while (P[indeks].ps_nb == nil)
             {
-                printf("%c => ", P[P[P[i].ps_fs].ps_nb].info);
+                indeks = P[indeks].ps_pr;
+                if (indeks == 1)
+                {
+                    break;
+                }
+            }
+            indeks = P[indeks].ps_nb;
+            printf("=> %c ", P[indeks].info);
+
+        }else{
+            if (P[indeks].ps_fs != nil){
+                printf("=> %c ",P[P[indeks].ps_fs].info );
+                indeks = P[indeks].ps_fs;
+            }
+            else{
+                if (P[indeks].ps_nb != nil){
+                    printf("=> %c ", P[P[indeks].ps_nb].info);
+                    indeks = P[indeks].ps_nb;
+                }
             }
         }
-        i++;
     }
+}
 
-    
+void InOrder (Isi_Tree P){
+    int indeks = 1;
+    printf("%c ", P[indeks].info);
 }
 
 void PrintTree (Isi_Tree P){
@@ -87,5 +103,4 @@ void PrintTree (Isi_Tree P){
         printf("%d ",P[i].ps_nb); 
         printf("%d\n\n",P[i].ps_pr);
     }
-    
 }
