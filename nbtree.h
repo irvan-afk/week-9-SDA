@@ -9,6 +9,7 @@
 #define nbtrees_h
 #include "BOOLEAN.H"
 #include "stdio.h"
+#include "conio.h"
 //Maksimal node yang dapat ditampung dalam array
 #define jml_maks 20
 //Arah traversal
